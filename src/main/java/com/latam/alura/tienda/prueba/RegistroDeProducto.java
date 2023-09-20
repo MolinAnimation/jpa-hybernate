@@ -6,24 +6,25 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import com.latam.alura.tienda.dao.CategoriaDAO;
 import com.latam.alura.tienda.dao.ProductoDAO;
+import com.latam.alura.tienda.modelo.Categoria;
 import com.latam.alura.tienda.modelo.Producto;
 import com.latam.alura.tienda.utils.JPAUtils;
 
 public class RegistroDeProducto {
 
 	public static void main(String[] args) {
-		// crea la instancia de la entidad producto con sus respectivos atributos
-		Producto celular = new Producto();
-		celular.setNombre("Samsung");
-		celular.setDescripcion("Telefono usado");
-		celular.setPrecio(new BigDecimal("1000"));
+		Categoria celulares = new Categoria("CELULARES");
+		Producto celular = new Producto("Samsung", "Telefono usado", new BigDecimal("1000"), celulares);
 
 		EntityManager em = JPAUtils.getEntityManager();
 
+		CategoriaDAO categoriaDAO = new CategoriaDAO(em);
 		ProductoDAO productoDAO = new ProductoDAO(em);
-		em.getTransaction().begin();
 
+		em.getTransaction().begin();
+		categoriaDAO.guardar(celulares);
 		productoDAO.guardar(celular);
 		em.getTransaction().commit();
 		em.close();
